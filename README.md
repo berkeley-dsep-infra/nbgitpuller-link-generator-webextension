@@ -1,6 +1,6 @@
-# nbgitpuller Link Generator WebExtension
+# Datahub Link Generator WebExtension
 
-A browser extension to help you generate [nbgitpuller](https://jupyterhub.github.io/nbgitpuller/)
+A browser extension to help you generate [Datahub](https://jupyterhub.github.io/nbgitpuller/)
 links directly from GitHub.
 
 [Install Firefox Extension](https://addons.mozilla.org/en-US/firefox/addon/nbgitpuller-link-generator/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=search)
@@ -11,9 +11,9 @@ It adds an icon to the browser toolbar which will be enabled whenever you are on
 
 On clicking the button, a form pops up. You can enter a JupyterHub URL and the application
 you want to use to open this file, folder or repository. Then you
-can just copy the nbgitpuller URL, and share it with your students!
+can just copy the Datahub URL, and share it with your students!
 
-![nbgitpuller popover](screenshot-popover.png)
+![popover](screenshot-popover.png)
 
 The JupyterHub URL and application you choose are remembered, so
 you do not need to enter it over and over again.
@@ -35,20 +35,20 @@ from the [the Chrome Web Store](https://chrome.google.com/webstore/detail/nbgitp
 ### On Firefox
 
 1. Download the `.zip` version of the latest [release](https://github.com/yuvipanda/nbgitpuller-link-generator/releases)
-   of the extension. You want the file named `nbgitpuller_link_generator-<version>.zip`.
+   of the extension. You want the file named `datahub_link_generator-<version>.zip`.
 2. In your firefox, go to the [about:debugging](about:debugging#/runtime/this-firefox) page,
    and select the 'This Firefox' tab on the left.
 3. Under *Temporary Extensions*, click *Load Temporary Add-on...*.
 4. Navigate to the `.zip` file you downloaded in step 1, and select that
 5. This should enable the addon! If you go to any repo on GitHub, you should see
-   the nbgitpuller button now!
+   the Datahub button now!
 
 You can find more information [here](https://developer.mozilla.org/en-US/docs/Tools/about:debugging#extensions).
 
 ### On Google Chrome / Chromium
 
 1. Download the `.zip` version of the latest [release](https://github.com/yuvipanda/nbgitpuller-link-generator/releases)
-   of the extension. You want the file named `nbgitpuller_link_generator-<version>.zip`.
+   of the extension. You want the file named `datahub_link_generator-<version>.zip`.
 2. Extract the `.zip` file you downloaded.
 3. In your Google Chrome / Chromium, go to [chrome://extensions](chrome://extensions/).
 4. Enable the *Developer Mode* toggle in the top right. This should make a few options visible

@@ -1,5 +1,5 @@
 {
-  "name": "nbgitpuller-link-generator",
+  "name": "datahub-link-generator",
   "version": "3.0.0",
   "description": "",
   "private": true,
@@ -8,15 +8,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yuvipanda/nbgitpuller-link-generator.git"
+    "url": "git+https://github.com/berkeley-dsep-infra/nbgitpuller-link-generator-webextension.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yuvipanda/nbgitpuller-link-generator/issues"
+    "url": "https://github.com/berkeley-dsep-infra/nbgitpuller-link-generator-webextension/tree/main"
   },
-  "homepage": "https://github.com/yuvipanda/nbgitpuller-link-generator#readme",
+  "homepage": "https://github.com/berkeley-dsep-infra/nbgitpuller-link-generator-webextension/tree/main",
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",

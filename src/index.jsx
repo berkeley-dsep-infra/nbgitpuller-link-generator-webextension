@@ -68,7 +68,7 @@ function Form() {
             setFinishedCopying(true);
             setTimeout(() => setFinishedCopying(false), 3 * 1000)
         }}>
-            <CopyIcon /> {finishedCopying ? "Copied!" : "Copy nbgitpuller link"}
+            <CopyIcon /> {finishedCopying ? "Copied!" : "Copy Datahub link"}
         </Button>
     </Box>
 }
