@@ -73,7 +73,7 @@ function Form() {
             onChange = {
                 (ev) => setHubUrl(ev.target.value)
             }
-            placeholder="https://myjupyterhub.org"
+            placeholder="https://example.edu"
             aria-label="JupyterHub URL"
             sx={{ pt: 0.5, pb: 0.5 }}
         />
