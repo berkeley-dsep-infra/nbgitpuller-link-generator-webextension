@@ -6,24 +6,41 @@ import GitUrlParse from 'git-url-parse';
 
 import { useState } from 'react';
 
-import { Button, Box, Text, Popover, Heading, ThemeProvider, TextInput } from '@primer/components';
-import { CopyIcon } from '@primer/octicons-react';
+import { Button, Box, Text, Popover, Heading, ThemeProvider, TextInput, SelectMenu, DropdownMenu, DropdownButton } from '@primer/components';
+
+import { CopyIcon, TabExternalIcon } from '@primer/octicons-react';
 
 import { AVAILABLE_APPS, generateRegularUrl } from './generator';
 import { getPref, setPref } from './prefs';
 
-function copyGeneratedUrl(hubUrl, app) {
-    const parts = GitUrlParse(window.location.href);
-    const repoUrl = `${parts.protocol}://${parts.source}/${parts.full_name}`;
-    const url = generateRegularUrl(hubUrl, repoUrl, parts.ref, app, parts.name + '/' + parts.filepath);
-    navigator.clipboard.writeText(url);
+function copyGeneratedUrl(hubUrl, app, open, targetPath) {
+    const query = { active: true, currentWindow: true };
+    chrome.tabs.query(query, function (tabs) {
+        const activeTab = tabs[0];
+        if (activeTab) {
+            const parts = GitUrlParse(activeTab.url);
+            const repoUrl = `${parts.protocol}://${parts.source}/${parts.full_name}`;
+            const url = generateRegularUrl(hubUrl, repoUrl, parts.ref, app, parts.name + '/' + parts.filepath, targetPath);
+            if (open) {
+                chrome.tabs.create({url: url});
+            } else {
+                navigator.clipboard.writeText(url);
+            }
+        }
+    });
 }
 
 function Form() {
     const [hubUrl, setHubUrl] = useState(getPref('hub-url', ''));
     const [app, setApp] = useState(getPref('app', 'classic'));
+    const [targetPath, setTargetPath] = useState(getPref('target-path', ''));
     const [isValidHubUrl, setIsValidHubUrl] = useState(false);
     const [finishedCopying, setFinishedCopying] = useState(false);
+    const [currentFilePath, setCurrentFilePath] = useState('');
+    const [isOnShinyFile, setIsOnShinyFile] = useState(false);
+    const [repoName, setRepoName] = React.useState('');
+    const [showShinyFileNotification, setShowShinyFileNotification] = useState(false);
+
 
     useEffect(() => {
         try {
@@ -43,110 +60,176 @@ function Form() {
         setPref('app', app);
     }, [app])
 
+    useEffect(() => {
+        setPref('target-path', targetPath);
+    }, [targetPath])
+
+    // Check if current GitHub page is a Shiny-related file
+    useEffect(() => {
+        const query = { active: true, currentWindow: true };
+        chrome.tabs.query(query, function (tabs) {
+            const activeTab = tabs[0];
+            if (activeTab) {
+                const parts = GitUrlParse(activeTab.url);
+                const filepath = parts.filepath || '';
+                setCurrentFilePath(filepath);
+                setRepoName(parts.name || ''); // Set repo name from GitHub URL
+                
+                // Check if current file is a Shiny-related file
+                const shinyFilePattern = /\.(R|Rmd|r|rmd)$/i;
+                const isShinyFile = shinyFilePattern.test(filepath) && 
+                                  (filepath.toLowerCase().includes('app.') || 
+                                   filepath.toLowerCase().includes('server.') ||
+                                   filepath.toLowerCase().includes('ui.') ||
+                                   filepath.toLowerCase().includes('global.'));
+                
+                setIsOnShinyFile(isShinyFile);
+            }
+        });
+    }, []);
+
+    // Auto-populate target param when Shiny is selected with ShinyApps/<repo-name> format
+    React.useEffect(() => {
+        if (app === 'shiny' && repoName) {
+            // Check if currentFilePath is a file or directory
+            if (currentFilePath && !currentFilePath.endsWith('/')) {
+                // It's a file, prefill targetPath with ShinyApps/repoName
+                const newTargetPath = `ShinyApps/${repoName}`;
+                setTargetPath(newTargetPath);
+                setPref('target-path', newTargetPath);
+            } else {
+                 // It's a directory or no specific file, prefill with ShinyApps/repoName
+                const newTargetPath = `ShinyApps/${repoName}`;
+                setTargetPath(newTargetPath);
+                setPref('target-path', newTargetPath);
+            }
+        }
+    }, [app, repoName, currentFilePath]); // Added currentFilePath dependency
+
+    // Show notification if a Shiny file is detected
+    React.useEffect(() => {
+        if (app === 'shiny' && currentFilePath && (currentFilePath.endsWith('.R') || currentFilePath.endsWith('.Rmd'))) {
+            setShowShinyFileNotification(true);
+        } else {
+            setShowShinyFileNotification(false);
+        }
+    }, [app, currentFilePath]);
+
+
+    const handleGenerateLink = (openInNewTab) => {
+        copyGeneratedUrl(hubUrl, app, openInNewTab, targetPath);
+        // Flash a 'Copied!' message for 3 seconds after copying
+        setFinishedCopying(true);
+        setTimeout(() => setFinishedCopying(false), 3 * 1000)
+    };
+
+    const handleSelectChange = (event) => {
+        console.log(event.target)
+        const selectedItemKey = event.target.value;
+        setApp(selectedItemKey);
+    };
+
+    const options = Object.entries(AVAILABLE_APPS).map(([key, value]) => (
+        <option value={key} key={key}>{value.title}</option>
+    ));
+
     return <Box display="flex" flexDirection="column">
-        <Heading sx={{ fontSize: 2, mb: 1 }}>JupyterHub URL</Heading>
+        <Box mb={2}>
+            <Heading sx={{ fontSize: 2, mb: 1, mt: 3 }}>JupyterHub URL</Heading>
+            <TextInput
+                value={hubUrl}
+                onChange = {
+                    (ev) => setHubUrl(ev.target.value)
+                }
+                placeholder="https://example.edu"
+                aria-label="JupyterHub URL"
+                sx={{ pt: 0.5, pb: 0.5 }}
+            />
 
-        <TextInput value={hubUrl} onChange={(ev) => setHubUrl(ev.target.value)} placeholder="https://myjupyterhub.org" aria-label="JupyterHub URL" />
-        <Text color="danger.fg" sx={{ visibility: isValidHubUrl ? "hidden" : "visible" }}>Enter a valid URL</Text>
+            <Text color="danger.fg" sx={{ visibility: isValidHubUrl ? "hidden" : "visible" }}>Enter a valid URL</Text>
+        </Box>
 
-        <Heading sx={{ fontSize: 2, mb: 1, mt: 2 }}>Open in</Heading>
-        <select className="form-select mb-1" onChange={(ev) => setApp(ev.target.value)} value={app}>
-            {Object.entries(AVAILABLE_APPS).map(([name, value]) => {
-                return <option key={name} value={name}>{value.title}</option>
-            })};
-        </select>
+        <Heading sx={{ fontSize: 2, mb: 1, mt: 3 }}>Open in</Heading>
 
-        <Button disabled={!isValidHubUrl || finishedCopying} sx={{ mt: 2 }} onClick={() => {
-            copyGeneratedUrl(hubUrl, app);
-            // Flash a 'Copied!' message for 3 seconds after copying
-            setFinishedCopying(true);
-            setTimeout(() => setFinishedCopying(false), 3 * 1000)
-        }}>
-            <CopyIcon /> {finishedCopying ? "Copied!" : "Copy nbgitpuller link"}
-        </Button>
+        <div class="select-container">
+            <select class="custom-select" value={app} onChange={handleSelectChange}>
+                {options}
+            </select>
+        </div>
+       
+        {app === 'shiny' && (
+            <>
+                {isOnShinyFile && (
+                    <Box sx={{ 
+                        backgroundColor: 'success.subtle', 
+                        border: '1px solid', 
+                        borderColor: 'success.muted',
+                        borderRadius: 2, 
+                        p: 2, 
+                        mb: 2, 
+                        mt: 2 
+                    }}>
+                        <Text sx={{ fontSize: 1, fontWeight: 'semibold', color: 'success.fg' }}>
+                            ✅ Smart Detection: Shiny File Found
+                        </Text>
+                        <Text sx={{ fontSize: 1, color: 'success.fg', mt: 1 }}>
+                            Detected <strong>{currentFilePath.split('/').pop()}</strong> in your current view. 
+                        </Text>
+                        <Text sx={{ fontSize: 1, color: 'success.fg' }}>
+                            • <strong>Directory</strong>: {currentFilePath.includes('/') ? currentFilePath.substring(0, currentFilePath.lastIndexOf('/')) : 'root folder'} (will be used in urlpath)
+                        </Text>
+                        <Text sx={{ fontSize: 1, color: 'success.fg' }}>
+                            • <strong>File</strong>: {currentFilePath.split('/').pop()} (auto-filled in target param as ShinyApps/repo-name)
+                        </Text>
+                    </Box>
+                )}
+                
+                <Heading sx={{ fontSize: 2, mb: 1, mt: 3 }}>target param</Heading>
+                <TextInput
+                    value={targetPath}
+                    onChange={(ev) => setTargetPath(ev.target.value)}
+                    placeholder={`ShinyApps/${repoName}`}
+                    aria-label="Target parameter for Shiny app"
+                    sx={{ pt: 0.5, pb: 0.5 }}
+                />
+                <Text sx={{ fontSize: 1, color: "fg.muted", mt: 1 }}>
+                    Specifies where the shiny app will be launched in user's home directory in datahub
+                </Text>
+            </>
+        )}
+
+        <div class='button-row'>
+            <Button disabled={!isValidHubUrl || finishedCopying} sx={{ mt: 2}} onClick={() => {
+                copyGeneratedUrl(hubUrl, app, true, targetPath);
+            }}>
+                <TabExternalIcon /> Open in tab
+            </Button>
+
+            <Button
+                disabled={!isValidHubUrl || finishedCopying}
+                className="action-button"
+                onClick={() => {
+                    copyGeneratedUrl(hubUrl, app, false, targetPath);
+                    // Flash a 'Copied!' message for 3 seconds after copying
+                    setFinishedCopying(true);
+                    setTimeout(() => setFinishedCopying(false), 3 * 1000)
+                }}>
+                <CopyIcon /> {finishedCopying ? "Copied!" : "Copy nbgitpuller link"}
+            </Button>
+            
+        </div>
     </Box>
 }
 
-function NBGitPullerButton() {
-    const [open, setOpen] = React.useState(false)
-
-    // Using <details> here with details-overlay gives us behavior of closing the popover when clikced outside
-    const b = <details className="details-overlay details-reset">
-        <summary className="btn mr-2" onClick={() => setOpen(!open)}>
-            nbgitpuller <span className="dropdown-caret"></span>
-        </summary>
-
-
-        <Popover open={open} caret="top-left">
-            <Popover.Content sx={{ mt: 2, width: 320 }} className="color-shadow-large">
-                <Form />
-            </Popover.Content>
-        </Popover>
-    </details>;
-    return b;
-}
-
-/**
- * When you navigate between files and folders in GitHub, the navigation is done
- * client side - so the onload events aren't fired again. This means our code to
- * add the button isn't run. Ideally, we'll find some way to hook into this, and
- * setup the button again after each file nav. Unfortunately, no such event seems
- * to exist, at least not directly in content scripts. popstate is only for human
- * interaction (like pressing the back button), and monkeypatching pushState seems
- * sketchy and doesn't actually work. Possibly something with a background script
- * is needed.
- *
- * In the meantime, instead, I just run a check every goddamn second. This is
- * absolutely horrible, but it'll help me ship. And I need to talk to my therapist
- * about not being able to really ship, so I think this is the right thing to do.
- */
-function implementUgliestHackEverAt0430AMToKeepTheButtonFromDisappearingOnNav() {
-    setInterval(() => {
-        if (document.hidden) {
-            // We're not in the foreground, nobody cares
-            return;
-        }
-
-        if (document.getElementById('nbgitpuller-link-generator')) {
-            return;
-        }
-
-        setup();
-        // Dear lord in heaven, please forgive me.
-    }, 1 * 1000)
-}
 
 function setup() {
-    if (document.getElementById('nbgitpuller-link-generator')) {
-        console.log('nbgitpuller-link-generator already setup');
-        return;
-    }
-    // Add 'nbgitpuller' dropdown button
-    const root = document.createElement('div');
-    root.id = 'nbgitpuller-link-generator';
-
-    if (document.querySelector('.file-navigation > div.d-flex')) {
-        // On a particular directory, insert this as first button, before 'Go to file'
-        document.querySelector('.file-navigation > div.d-flex').prepend(root);
-    } else if (document.getElementById('blob-path')) {
-        // On a particular file, insert it after the name of the file
-        document.getElementById('blob-path').insertAdjacentElement('afterend', root)
-    } else if (document.querySelector('.file-navigation > div.flex-auto')) {
-        // On root page of repo, insert this as first button, before 'Go To File'
-        document.querySelector('.file-navigation > div.flex-auto').insertAdjacentElement('afterend', root);
-    } else {
-        // Looks like we're not on a page with content
-        return;
-    }
+    const root = document.getElementById("root");
     ReactDOM.render(
-        <ThemeProvider>
-            <NBGitPullerButton />
-        </ThemeProvider>,
-        root
+            <ThemeProvider>
+                <Form />
+            </ThemeProvider>,
+            root
     );
-
-
 }
 
 setup();
-implementUgliestHackEverAt0430AMToKeepTheButtonFromDisappearingOnNav();
