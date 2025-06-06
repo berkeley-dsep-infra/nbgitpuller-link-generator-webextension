@@ -1,4 +1,3 @@
-// Backward compatible function - supports both old (5 params) and new (6 params) signatures
 function generateRegularUrl(hubUrl, repoUrl, branch, app, filepath, targetPath = null) {
     let url = new URL(hubUrl);
 

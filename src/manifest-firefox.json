@@ -1,24 +1,25 @@
 {
-	"manifest_version": 3,
-	"name": "Datahub Link generator",
-	"version": "3.0",
-	"description": "A browser extension to generate Datahub (http://jupyterhub.github.io/nbgitpullerbgitpuller) links directly from GitHub",
-	"permissions": [
-		"tabs"
-	],
-	"browser_specific_settings": {
-		"gecko": {
-		  "id": "{2dc254a2-7e69-42c5-8749-45f9a1501cb8}"
-		}
-	},
-	"background": {
-		"scripts": ["background.js"]
-	},
-	"action": {
-		"default_icon": {
-			"32": "icon_32.png"
-		},
-		"default_title": "Generate Datahub link",
-		"default_popup": "popup.html"
-	}
+    "manifest_version": 2,
+    "name": "DataHub Link Generator",
+    "version": "1.7.1",
+    "description": "Generate shareable Datahub links directly from GitHub",
+    "icons": {
+        "32": "icon_32.png"
+    },
+    "browser_action": {
+        "default_popup": "popup_disabled.html",
+        "default_title": "DataHub Link Generator",
+        "default_icon": {
+            "32": "icon_32_disabled.png"
+        }
+    },
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    },
+    "permissions": [
+        "tabs",
+        "activeTab"
+    ],
+    "content_security_policy": "script-src 'self'; object-src 'self'"
 }
