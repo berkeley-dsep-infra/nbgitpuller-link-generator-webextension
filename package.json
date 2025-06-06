@@ -1,6 +1,6 @@
 {
   "name": "datahub-link-generator",
-  "version": "1.0.0",
+  "version": "4.0.0",
   "description": "A browser extension used at UC Berkeley to generate nbgitpuller links that launch notebooks to DataHub directly from GitHub",
   "private": true,
   "scripts": {
