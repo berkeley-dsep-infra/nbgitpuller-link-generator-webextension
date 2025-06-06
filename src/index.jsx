@@ -137,16 +137,18 @@ function Form() {
     return <Box display="flex" flexDirection="column">
         <Box mb={2}>
             <Heading sx={{ fontSize: 2, mb: 1, mt: 3 }}>JupyterHub URL</Heading>
-            <TextInput
-                value={hubUrl}
-                onChange = {
-                    (ev) => setHubUrl(ev.target.value)
-                }
-                placeholder="https://example.edu"
-                aria-label="JupyterHub URL"
-                sx={{ pt: 0.5, pb: 0.5 }}
-            />
-
+            <div className="select-container">
+                <TextInput
+                    value={hubUrl}
+                    onChange = {
+                        (ev) => setHubUrl(ev.target.value)
+                    }
+                    placeholder="https://example.edu"
+                    aria-label="JupyterHub URL"
+                    className="custom-select"
+                    sx={{ pt: 0.5, pb: 0.5, width: '100%' }}
+                />
+            </div>
             <Text color="danger.fg" sx={{ visibility: isValidHubUrl ? "hidden" : "visible" }}>Enter a valid URL</Text>
         </Box>
 
@@ -185,13 +187,14 @@ function Form() {
                     </Box>
                 )}
                 
-                <Heading sx={{ fontSize: 2, mb: 1, mt: 3 }}>target param</Heading>
+                <Heading sx={{ fontSize: 2, mb: 1, mt: 3 }}>Target Param</Heading>
                 <TextInput
                     value={targetPath}
                     onChange={(ev) => setTargetPath(ev.target.value)}
                     placeholder={`ShinyApps/${repoName}`}
                     aria-label="Target parameter for Shiny app"
-                    sx={{ pt: 0.5, pb: 0.5 }}
+                    className="custom-select"
+                    sx={{ pt: 0.5, pb: 0.5, width: '100%' }}
                 />
                 <Text sx={{ fontSize: 1, color: "fg.muted", mt: 1 }}>
                     Specifies where the shiny app will be launched in user's home directory in datahub
