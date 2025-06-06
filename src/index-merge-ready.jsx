@@ -42,7 +42,6 @@ function Form() {
     const [repoName, setRepoName] = React.useState('');
     const [showShinyFileNotification, setShowShinyFileNotification] = useState(false);
 
-
     useEffect(() => {
         try {
             new URL(hubUrl);
@@ -115,7 +114,6 @@ function Form() {
             setShowShinyFileNotification(false);
         }
     }, [app, currentFilePath]);
-
 
     const handleGenerateLink = (openInNewTab) => {
         copyGeneratedUrl(hubUrl, app, openInNewTab, targetPath);
@@ -221,7 +219,6 @@ function Form() {
         </div>
     </Box>
 }
-
 
 function setup() {
     const root = document.getElementById("root");
