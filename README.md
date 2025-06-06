@@ -1,9 +1,7 @@
 # DataHub Link Generator WebExtension
 
 A browser extension to help you generate [nbgitpuller](https://jupyterhub.github.io/nbgitpuller/)
-links directly from GitHub.
-
-[Install Firefox Extension](https://addons.mozilla.org/en-US/firefox/addon/nbgitpuller-link-generator/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=search)
+links directly from GitHub. This is a fork of nbgitpuller-link-generator - https://github.com/yuvipanda/nbgitpuller-link-generator-webextension
 
 ## What does this do?
 

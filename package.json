@@ -1,22 +1,22 @@
 {
   "name": "datahub-link-generator",
   "version": "1.0.0",
-  "description": "A browser extension to generate DataHub links directly from GitHub",
+  "description": "A browser extension used at UC Berkeley to generate nbgitpuller links that launch notebooks to DataHub directly from GitHub",
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yuvipanda/nbgitpuller-link-generator.git"
+    "url": "https://github.com/berkeley-dsep-infra/nbgitpuller-link-generator-webextension"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yuvipanda/nbgitpuller-link-generator/issues"
+    "url": "https://github.com/berkeley-dsep-infra/nbgitpuller-link-generator-webextension/issues"
   },
-  "homepage": "https://github.com/yuvipanda/nbgitpuller-link-generator#readme",
+  "homepage": "https://github.com/berkeley-dsep-infra/nbgitpuller-link-generator-webextension#readme",
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
