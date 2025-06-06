@@ -137,7 +137,7 @@ function Form() {
     return <Box display="flex" flexDirection="column">
         <Box mb={2}>
             <Heading sx={{ fontSize: 2, mb: 1, mt: 3 }}>JupyterHub URL</Heading>
-            <div className="select-container">
+            <div className="select-container" style={{ width: '100%' }}>
                 <TextInput
                     value={hubUrl}
                     onChange = {
@@ -146,7 +146,7 @@ function Form() {
                     placeholder="https://example.edu"
                     aria-label="JupyterHub URL"
                     className="custom-select"
-                    sx={{ pt: 0.5, pb: 0.5, width: '100%' }}
+                    sx={{ pt: 0.5, pb: 0.5, width: '100%', boxSizing: 'border-box' }}
                 />
             </div>
             <Text color="danger.fg" sx={{ visibility: isValidHubUrl ? "hidden" : "visible" }}>Enter a valid URL</Text>
@@ -188,14 +188,16 @@ function Form() {
                 )}
                 
                 <Heading sx={{ fontSize: 2, mb: 1, mt: 3 }}>Target Param</Heading>
-                <TextInput
-                    value={targetPath}
-                    onChange={(ev) => setTargetPath(ev.target.value)}
-                    placeholder={`ShinyApps/${repoName}`}
-                    aria-label="Target parameter for Shiny app"
-                    className="custom-select"
-                    sx={{ pt: 0.5, pb: 0.5, width: '100%' }}
-                />
+                <div className="select-container" style={{ width: '100%' }}>
+                    <TextInput
+                        value={targetPath}
+                        onChange={(ev) => setTargetPath(ev.target.value)}
+                        placeholder={`ShinyApps/${repoName}`}
+                        aria-label="Target parameter for Shiny app"
+                        className="custom-select"
+                        sx={{ pt: 0.5, pb: 0.5, width: '100%', boxSizing: 'border-box' }}
+                    />
+                </div>
                 <Text sx={{ fontSize: 1, color: "fg.muted", mt: 1 }}>
                     Specifies where the shiny app will be launched in user's home directory in datahub
                 </Text>
