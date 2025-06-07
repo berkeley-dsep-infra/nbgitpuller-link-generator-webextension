@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "DataHub Link Generator",
     "version": "4.0",
-    "description": "Generate shareable Datahub links directly from GitHub",
+    "description": "Generate shareable DataHub links directly from GitHub",
     "icons": {
         "32": "icon_32.png"
     },
@@ -10,7 +10,7 @@
         "default_popup": "popup_disabled.html",
         "default_title": "DataHub Link Generator",
         "default_icon": {
-            "32": "icon_32_disabled.png"
+            "32": "icon_32.png"
         }
     },
     "background": {
