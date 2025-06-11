@@ -1,29 +1,29 @@
 {
   "name": "datahub-link-generator",
-  "version": "3.0.0",
-  "description": "",
+  "version": "4.0.0",
+  "description": "A browser extension used at UC Berkeley to generate nbgitpuller links that launch notebooks to DataHub directly from GitHub",
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/berkeley-dsep-infra/nbgitpuller-link-generator-webextension.git"
+    "url": "https://github.com/berkeley-dsep-infra/nbgitpuller-link-generator-webextension"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/berkeley-dsep-infra/nbgitpuller-link-generator-webextension/tree/main"
+    "url": "https://github.com/berkeley-dsep-infra/nbgitpuller-link-generator-webextension/issues"
   },
-  "homepage": "https://github.com/berkeley-dsep-infra/nbgitpuller-link-generator-webextension/tree/main",
+  "homepage": "https://github.com/berkeley-dsep-infra/nbgitpuller-link-generator-webextension#readme",
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
     "babel-loader": "^8.2.3",
     "copy-webpack-plugin": "^9.0.1",
-    "web-ext": "^6.5.0",
+    "web-ext": "^8.7.1",
     "webpack": "^5.62.1",
     "webpack-cli": "^4.9.1"
   },
@@ -32,7 +32,7 @@
     "@primer/octicons": "^16.1.1",
     "@primer/octicons-react": "^16.1.1",
     "clipboard": "^2.0.8",
-    "git-url-parse": "^11.6.0",
+    "git-url-parse": "^16.1.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "styled-components": "^5.3.3"

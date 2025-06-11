@@ -1,9 +1,7 @@
-# Datahub Link Generator WebExtension
+# DataHub Link Generator WebExtension
 
-A browser extension to help you generate [Datahub](https://jupyterhub.github.io/nbgitpuller/)
-links directly from GitHub.
-
-[Install Firefox Extension](https://addons.mozilla.org/en-US/firefox/addon/nbgitpuller-link-generator/?utm_source=addons.mozilla.org&utm_medium=referral&utm_content=search)
+A browser extension to help you generate [nbgitpuller](https://jupyterhub.github.io/nbgitpuller/)
+links directly from GitHub. This is a fork of nbgitpuller-link-generator - https://github.com/yuvipanda/nbgitpuller-link-generator-webextension
 
 ## What does this do?
 
@@ -41,7 +39,7 @@ from the [the Chrome Web Store](https://chrome.google.com/webstore/detail/nbgitp
 3. Under *Temporary Extensions*, click *Load Temporary Add-on...*.
 4. Navigate to the `.zip` file you downloaded in step 1, and select that
 5. This should enable the addon! If you go to any repo on GitHub, you should see
-   the Datahub button now!
+   the DataHub icon now!
 
 You can find more information [here](https://developer.mozilla.org/en-US/docs/Tools/about:debugging#extensions).
 
@@ -64,13 +62,7 @@ You can find more information [here](https://developer.chrome.com/docs/extension
 ```bash
 npm install
 npx webpack --mode=production
+npx web-ext build -s dist/
 ```
 
-Then build for either browser: (They have slightly different manifest files)
-
-```
-npx web-ext build -s dist-firefox/ -a web-ext-artifacts-firefox --overwrite-dest
-npx web-ext build -s dist-chrome/ -a web-ext-artifacts-chrome --overwrite-dest
-```
-
-This produces a `.zip` file in each `web-ext-artifacts*` folder that you can use.
+This produces a `.xpi` file in `web-ext-artifacts/` you can use.

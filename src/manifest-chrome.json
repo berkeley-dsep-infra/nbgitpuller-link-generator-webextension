@@ -1,19 +1,26 @@
 {
-	"manifest_version": 3,
-	"name": "Datahub Link generator",
-	"version": "3.0",
-	"description": "A browser extension to generate Datahub links directly from GitHub",
-	"permissions": [
-		"tabs"
-	],
-	"background": {
-		"service_worker": "background.js"
-	},
-	"action": {
-		"default_icon": {
-			"32": "icon_32.png"
-		},
-		"default_title": "Generate Datahub link",
-		"default_popup": "popup.html"
-	}
+    "manifest_version": 3,
+    "name": "DataHub Link Generator",
+    "version": "4.0",
+    "description": "Generate shareable DataHub links directly from GitHub",
+    "icons": {
+        "32": "icon_32.png"
+    },
+    "action": {
+        "default_popup": "popup_disabled.html",
+        "default_title": "DataHub Link Generator",
+        "default_icon": {
+            "32": "icon_32.png"
+        }
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "permissions": [
+        "tabs",
+        "activeTab"
+    ],
+    "host_permissions": [
+        "https://github.com/*"
+    ]
 }
