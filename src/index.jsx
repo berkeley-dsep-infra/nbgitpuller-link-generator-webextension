@@ -169,18 +169,18 @@ function Form() {
                             • <strong>Directory</strong>: {currentFilePath.includes('/') ? currentFilePath.substring(0, currentFilePath.lastIndexOf('/')) : 'root folder'} (will be used in urlpath)
                         </Text>
                         <Text sx={{ fontSize: 1, color: 'success.fg' }}>
-                            • <strong>File</strong>: {currentFilePath.split('/').pop()} (auto-filled in target param as ShinyApps/repo-name)
+                            • <strong>File</strong>: {currentFilePath.split('/').pop()} (auto-filled in target path as ShinyApps/repo-name)
                         </Text>
                     </Box>
                 )}
                 
-                <Heading sx={{ fontSize: 2, mb: 1, mt: 3 }}>Target Param</Heading>
+                <Heading sx={{ fontSize: 2, mb: 1, mt: 3 }}>Target Path</Heading>
                 <div className="select-container" style={{ width: '100%' }}>
                     <TextInput
                         value={targetPath}
                         onChange={(ev) => setTargetPath(ev.target.value)}
                         placeholder={`ShinyApps/${repoName}`}
-                        aria-label="Target parameter for Shiny app"
+                        aria-label="Target path for Shiny app"
                         className="custom-select"
                         sx={{ pt: 0.5, pb: 0.5, width: '100%', boxSizing: 'border-box' }}
                     />
