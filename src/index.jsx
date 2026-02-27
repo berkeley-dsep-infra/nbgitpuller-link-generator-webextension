@@ -13,15 +13,17 @@ import { CopyIcon, TabExternalIcon } from '@primer/octicons-react';
 import { AVAILABLE_APPS, generateRegularUrl } from './generator';
 import { getPref, setPref } from './prefs';
 
-// Backward compatible function - supports both old (3 params) and new (4 params) signatures
-function copyGeneratedUrl(hubUrl, app, open, targetPath = null) {
+// Backward compatible function - supports both old (3 params) and new (5 params) signatures
+function copyGeneratedUrl(hubUrl, app, open, targetPath = null, branch = null) {
     const query = { active: true, currentWindow: true };
     chrome.tabs.query(query, function (tabs) {
         const activeTab = tabs[0];
         if (activeTab) {
             const parts = GitUrlParse(activeTab.url);
             const repoUrl = `${parts.protocol}://${parts.source}/${parts.full_name}`;
-            const url = generateRegularUrl(hubUrl, repoUrl, parts.ref, app, parts.name + '/' + parts.filepath, targetPath);
+            // Use provided branch or fall back to the branch from the URL
+            const branchToUse = branch || parts.ref;
+            const url = generateRegularUrl(hubUrl, repoUrl, branchToUse, app, parts.name + '/' + parts.filepath, targetPath);
             if (open) {
                 chrome.tabs.create({url: url});
             } else {
@@ -35,6 +37,7 @@ function Form() {
     const [hubUrl, setHubUrl] = useState(getPref('hub-url', ''));
     const [app, setApp] = useState(getPref('app', 'classic'));
     const [targetPath, setTargetPath] = useState(getPref('target-path', ''));
+    const [branch, setBranch] = useState(getPref('branch', 'master'));
     const [isValidHubUrl, setIsValidHubUrl] = useState(false);
     const [finishedCopying, setFinishedCopying] = useState(false);
     const [currentFilePath, setCurrentFilePath] = useState('');
@@ -62,6 +65,10 @@ function Form() {
     useEffect(() => {
         setPref('target-path', targetPath);
     }, [targetPath])
+
+    useEffect(() => {
+        setPref('branch', branch);
+    }, [branch])
 
     // Check if current GitHub page is a Shiny-related file
     useEffect(() => {
@@ -107,7 +114,7 @@ function Form() {
     }, [app, currentFilePath]);
 
     const handleGenerateLink = (openInNewTab) => {
-        copyGeneratedUrl(hubUrl, app, openInNewTab, targetPath);
+        copyGeneratedUrl(hubUrl, app, openInNewTab, targetPath, branch);
         setFinishedCopying(true);
         setTimeout(() => setFinishedCopying(false), 3 * 1000)
     };
@@ -137,6 +144,23 @@ function Form() {
                 />
             </div>
             <Text color="danger.fg" sx={{ visibility: isValidHubUrl ? "hidden" : "visible" }}>Enter a valid URL</Text>
+        </Box>
+
+        <Box mb={2}>
+            <Heading sx={{ fontSize: 2, mb: 1, mt: 3 }}>Branch</Heading>
+            <div className="select-container" style={{ width: '100%' }}>
+                <TextInput
+                    value={branch}
+                    onChange={(ev) => setBranch(ev.target.value)}
+                    placeholder="master"
+                    aria-label="Branch Name"
+                    className="custom-select"
+                    sx={{ pt: 0.5, pb: 0.5, width: '100%', boxSizing: 'border-box' }}
+                />
+            </div>
+            <Text sx={{ fontSize: 1, color: "fg.muted", mt: 1 }}>
+                Use <strong>main</strong> instead of <strong>master</strong> for new GitHub repositories
+            </Text>
         </Box>
 
         <Heading sx={{ fontSize: 2, mb: 1, mt: 3 }}>Open in</Heading>
@@ -193,7 +217,7 @@ function Form() {
 
         <div class='button-row'>
             <Button disabled={!isValidHubUrl || finishedCopying} sx={{ mt: 2}} onClick={() => {
-                copyGeneratedUrl(hubUrl, app, true, targetPath);
+                copyGeneratedUrl(hubUrl, app, true, targetPath, branch);
             }}>
                 <TabExternalIcon /> Open in tab
             </Button>
@@ -202,7 +226,7 @@ function Form() {
                 disabled={!isValidHubUrl || finishedCopying}
                 className="action-button"
                 onClick={() => {
-                    copyGeneratedUrl(hubUrl, app, false, targetPath);
+                    copyGeneratedUrl(hubUrl, app, false, targetPath, branch);
                     setFinishedCopying(true);
                     setTimeout(() => setFinishedCopying(false), 3 * 1000)
                 }}>
